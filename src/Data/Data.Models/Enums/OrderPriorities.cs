@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Enums
 {
-    internal enum OrderPriorities
+    public enum OrderPriorities
     {
         L,
         M,

@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Models
 {
-    internal class ItemType : BaseModel
+    public class ItemType : BaseModel
     {
         public string ItemTypeName { get; set; }
     }

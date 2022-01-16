@@ -4,7 +4,7 @@
 
     using System;
 
-    internal class BaseModel : IEntity<string>
+    public class BaseModel : IEntity<string>
     {
         public BaseModel()
         {
@@ -23,8 +23,8 @@
 
         public string ModifiedById { get; set; }
 
-        public DateTime DeletedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
-        public string DeletedById { get; set; }
+        public string? DeletedById { get; set; }
     }
 }

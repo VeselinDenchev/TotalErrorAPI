@@ -2,8 +2,8 @@
 {
     internal interface IDeletedInfo<T>
     {
-        public DateTime DeletedAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
-        public T DeletedById { get; set; }
+        public T? DeletedById { get; set; }
     }
 }

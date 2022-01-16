@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Models
 {
-    internal class Sales : BaseModel
+    public class Sale : BaseModel
     {
         public DateTime ShipDate { get; set; }
 

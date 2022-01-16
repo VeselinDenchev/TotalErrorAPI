@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Enums
 {
-    internal enum SalesChannels
+    public enum SalesChannels
     {
         Online,
         Offline,

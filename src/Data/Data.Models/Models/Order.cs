@@ -2,7 +2,7 @@
 {
     using Data.Models.Enums;
 
-    internal class Order : BaseModel
+    public class Order : BaseModel
     {
         public OrderPriorities OrderPriority { get; set; }
 
@@ -10,9 +10,7 @@
 
         public SalesChannels SalesChannel { get; set; }
 
-        public ICollection<Sales> Sales { get; set; }
-
-        public string SaleId { get; set; }
+        public ICollection<Sale> Sales { get; set; }
 
         public Country Country { get; set; }
 
