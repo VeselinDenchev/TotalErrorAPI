@@ -3,7 +3,9 @@
     using Data.Models.Models;
 
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
 
+    using System.Reflection;
 
     public class TotalErrorDbContext : DbContext
     {
@@ -17,9 +19,13 @@
 
         public DbSet<Sale> Sales { get; set; }
 
+        private IConfigurationRoot configuration;
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-R8623N1\SQLEXPRESS01;Database=TotalError;Trusted_Connection=True");
+            configuration = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
+
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
         }
     }
 }
