@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.Models.Models
+﻿namespace Data.Models.Models
 {
-    internal class Item
+    internal class ItemType : BaseModel
     {
+        public string ItemTypeName { get; set; }
     }
 }

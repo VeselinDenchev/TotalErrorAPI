@@ -4,20 +4,27 @@
 
     using System;
 
-    internal class BaseModel : IEntity
+    internal class BaseModel : IEntity<string>
     {
-        public string Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public BaseModel()
+        {
+            this.Id = Guid.NewGuid().ToString();
+            this.CreatedAt = DateTime.Now;
+            this.ModifiedAt = DateTime.Now;
+        }
 
-        public DateTime CreatedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string Id { get; set; }
 
-        public string CreatedById { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime CreatedAt { get; set; }
 
-        public DateTime ModifiedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string CreatedById { get; set; }
 
-        public string ModifiedById { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime ModifiedAt { get; set; }
 
-        public DateTime DeletedAt { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public string ModifiedById { get; set; }
 
-        public string DeletedById { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DateTime DeletedAt { get; set; }
+
+        public string DeletedById { get; set; }
     }
 }

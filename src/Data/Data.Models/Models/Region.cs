@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Data.Models.Models
+﻿namespace Data.Models.Models
 {
-    internal class Region
+    internal class Region : BaseModel
     {
+        public ICollection<Country> Countries { get; set; }
+
+        public string CountryId { get; set; }
     }
 }
