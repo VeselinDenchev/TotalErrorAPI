@@ -11,6 +11,7 @@
             this.Id = Guid.NewGuid().ToString();
             this.CreatedAt = DateTime.Now;
             this.ModifiedAt = DateTime.Now;
+            this.IsDeleted = false;
         }
 
         public string Id { get; set; }
@@ -26,5 +27,7 @@
         public DateTime? DeletedAt { get; set; }
 
         public string? DeletedById { get; set; }
+
+        public bool IsDeleted { get; set; }
     }
 }

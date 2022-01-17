@@ -19,6 +19,8 @@
 
         public DbSet<Sale> Sales { get; set; }
 
+        public DbSet<LastReadFile> LastReadFiles { get; set; }
+
         private IConfigurationRoot configuration;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

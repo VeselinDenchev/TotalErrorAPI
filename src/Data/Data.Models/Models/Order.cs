@@ -14,6 +14,6 @@
 
         public Country Country { get; set; }
 
-        public string CountryId { get; set; }
+        //public string CountryId { get; set; }
     }
 }

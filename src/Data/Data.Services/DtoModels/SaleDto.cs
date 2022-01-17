@@ -1,6 +1,6 @@
-﻿namespace Data.Models.Models
+﻿namespace Data.Services.DtoModels
 {
-    public class Sale : BaseModel
+    public class SaleDto
     {
         public DateTime ShipDate { get; set; }
 
@@ -16,12 +16,8 @@
 
         public decimal TotalProfit { get; set; }
 
-        public Order Order { get; set; }
+        public OrderDto Order { get; set; }
 
-        //public string OrderId { get; set; }
-
-        public ItemType ItemType { get; set; }
-
-        //public string ItemTypeId { get; set; }
+        public ItemTypeDto ItemType { get; set; }
     }
 }

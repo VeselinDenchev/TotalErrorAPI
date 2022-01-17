@@ -4,6 +4,7 @@ using Data.TotalErrorDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.TotalErrorDbContext.Migrations
 {
     [DbContext(typeof(TotalErrorDbContext))]
-    partial class TotalErrorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220116154101_Add_Last_Read_Files_Table_and_IsDeleted_Property_to_all_models")]
+    partial class Add_Last_Read_Files_Table_and_IsDeleted_Property_to_all_models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -211,10 +213,6 @@ namespace Data.TotalErrorDbContext.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ModifiedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
