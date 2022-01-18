@@ -29,19 +29,19 @@
         public string ShipDate { get; set; }
 
         [Name("Units Sold")]
-        public int UnitsSold { get; set; }
+        public string UnitsSold { get; set; }
 
         [Name("Unit Price")]
-        public decimal UnitPrice { get; set; }
+        public string UnitPrice { get; set; }
 
         [Name("Unit Cost")]
-        public decimal UnitCost { get; set; }
+        public string UnitCost { get; set; }
 
         [Name("Total Revenue")]
-        public decimal TotalRevenue { get; set; }
+        public string TotalRevenue { get; set; }
 
         [Name("Total Cost")]
-        public decimal TotalCost { get; set; }
+        public string TotalCost { get; set; }
 
         [Name("Total Profit")]
         public string TotalProfit { get; set; }
