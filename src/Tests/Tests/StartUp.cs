@@ -13,16 +13,14 @@
         public static void Main()
         {
             BaseService baseService = new BaseService(new TotalErrorDbContext());
-            List<Dictionary<string, List<TransferModel>>> transferModelsByFile = baseService.ReadFilesFromDirectory(@"E:\read_files");
+            Dictionary<string, List<TransferModel>> transferModelsByFile = baseService.ReadFilesFromDirectory(@"E:\read_files");
 
             DataObject data = baseService.Convert(transferModelsByFile);
             List<string> dates = new List<string>();
-            foreach (Dictionary<string, List<TransferModel>> date in transferModelsByFile)
+
+            foreach (string date in transferModelsByFile.Keys)
             {
-                foreach (KeyValuePair<string, List<TransferModel>> transferModelKeyValuePair in date)
-                {
-                    dates.Add(transferModelKeyValuePair.Key);
-                }
+                dates.Add(date);
             }
             List<DateTime> dateTimeList = new List<DateTime>();
             foreach (string date in dates)

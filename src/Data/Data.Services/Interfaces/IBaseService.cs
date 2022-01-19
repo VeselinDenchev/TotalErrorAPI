@@ -5,9 +5,9 @@
 
     public interface IBaseService
     {
-        public List<Dictionary<string, List<TransferModel>>> ReadFilesFromDirectory(string dir);
+        public Dictionary<string, List<TransferModel>> ReadFilesFromDirectory(string dir);
 
-        public DataObject Convert(List<Dictionary<string, List<TransferModel>>> transferModelsByFile);
+        public DataObject Convert(Dictionary<string, List<TransferModel>> transferModelsByFile);
 
         public void SaveDataToDatabase(DataObject data);
     }
