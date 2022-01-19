@@ -4,6 +4,7 @@ using Data.TotalErrorDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.TotalErrorDbContext.Migrations
 {
     [DbContext(typeof(TotalErrorDbContext))]
-    partial class TotalErrorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220119120803_Add_FileDate_column_to_Orders_and_Sales_tables")]
+    partial class Add_FileDate_column_to_Orders_and_Sales_tables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,9 +154,8 @@ namespace Data.TotalErrorDbContext.Migrations
                     b.Property<string>("DeletedById")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FileDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("FileDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
@@ -235,9 +236,8 @@ namespace Data.TotalErrorDbContext.Migrations
                     b.Property<string>("DeletedById")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FileDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("FileDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

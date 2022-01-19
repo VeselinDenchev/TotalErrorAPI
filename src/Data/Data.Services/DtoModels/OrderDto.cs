@@ -11,5 +11,7 @@
         public ICollection<SaleDto> Sales { get; set; }
 
         public CountryDto Country { get; set; }
+
+        public string FileDate { get; set; }
     }
 }

@@ -1,8 +1,8 @@
 ﻿namespace Data.Models.Models
 {
-    using Data.Models.Enums;
+    using Data.Models.Interfaces;
 
-    public class Order : BaseModel
+    public class Order : BaseModel, IFileDate
     {
         public string OrderPriority { get; set; }
 
@@ -13,6 +13,8 @@
         public ICollection<Sale> Sales { get; set; }
 
         public Country Country { get; set; }
+
+        public string FileDate { get; set; }
 
         //public string CountryId { get; set; }
     }

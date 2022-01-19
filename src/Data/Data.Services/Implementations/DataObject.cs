@@ -8,7 +8,7 @@ namespace Data.Services.Implementations
 
         public HashSet<ItemType> ItemTypes { get; set; }
 
-        public List<string> LastReadFiles { get; set; }
+        public List<DateTime> LastReadFiles { get; set; }
 
         public HashSet<Order> Orders { get; set; }
 

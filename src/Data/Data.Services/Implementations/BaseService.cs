@@ -4,11 +4,12 @@
 
     using Data.Models.Models;
     using Data.Services.DtoModels;
+    using Data.Services.Interfaces;
     using Data.TotalErrorDbContext;
 
     using System.Globalization;
 
-    public class BaseService
+    public class BaseService : IBaseService
     {
         public BaseService(TotalErrorDbContext dbContext)
         {
@@ -17,13 +18,14 @@
 
         public TotalErrorDbContext DbContext { get; }
 
-        public List<List<TransferModel>> ReadFilesFromDirectory(string dir, out List<string> fileNames)
+        public List<Dictionary<string, List<TransferModel>>> ReadFilesFromDirectory(string dir)
         {
             string[] files = Directory.GetFiles(dir);
-            fileNames = new List<string>();
+            //fileNames = new List<string>();
 
             List<TransferModel> transferModels = new List<TransferModel>();
-            List<List<TransferModel>> filesList = new List<List<TransferModel>>();
+            Dictionary<string, List<TransferModel>> transferModelDate = new Dictionary<string, List<TransferModel>>();
+            List<Dictionary<string, List<TransferModel>>> filesList = new List<Dictionary<string, List<TransferModel>>>();
 
             var lastReadDate = this.DbContext.LastReadFiles.OrderByDescending(x => x.LastReadFileDateTime);
 
@@ -39,8 +41,9 @@
                     if (!isRead || !anyFilesHasBeenRead)
                     {
                         transferModels = csv.GetRecords<TransferModel>().ToList();
-                        filesList.Add(transferModels);
-                        fileNames.Add(fileName);
+                        transferModelDate[fileName] = transferModels;
+                        filesList.Add(transferModelDate);
+                        //fileNames.Add(fileName);
                     }
                 }
             }
@@ -48,7 +51,7 @@
             return filesList;
         }
 
-        public DataObject Convert(List<List<TransferModel>> transferModelsByFile)
+        public DataObject Convert(List<Dictionary<string, List<TransferModel>>> transferModelsByFile)
         {
             Order order;
             Sale desiredSale;
@@ -68,126 +71,139 @@
             HashSet<Sale> tempSales = new HashSet<Sale>();
             HashSet<Order> tempOrders = new HashSet<Order>();
 
-            foreach (List<TransferModel> transferModels in transferModelsByFile)
+            foreach (Dictionary<string, List<TransferModel>> transferModelsDictionary in transferModelsByFile)
             {
-                foreach (TransferModel transferModel in transferModels)
+                List<string> dates = new List<string>();
+
+                foreach (KeyValuePair<string, List<TransferModel>> transferModelKeyValuePair in transferModelsDictionary)
                 {
-                    List<Sale> sales = new List<Sale>();
+                    dates.Add(transferModelKeyValuePair.Key);
 
-                    order = dbOrders.FirstOrDefault(x => x.Id == transferModel.OrderId);
-                    if (order is null)
+                    foreach (string date in dates)
                     {
-                        order = tempOrders.FirstOrDefault(x => x.Id == transferModel.OrderId);
-
-                        if (order is null)
+                        foreach (TransferModel transferModel in transferModelKeyValuePair.Value)
                         {
-                            order = new Order();
+                            List<Sale> sales = new List<Sale>();
 
-                            itemType = dbItemTypes.FirstOrDefault(it => it.ItemTypeName == transferModel.ItemType);
-
-                            if (itemType is null)
+                            order = dbOrders.FirstOrDefault(x => x.Id == transferModel.OrderId);
+                            if (order is null)
                             {
-                                itemType = tempItemTypes.FirstOrDefault(it => it.ItemTypeName == transferModel.ItemType);
+                                order = tempOrders.FirstOrDefault(x => x.Id == transferModel.OrderId);
 
-                                if (itemType is null)
+                                if (order is null)
                                 {
-                                    ItemType newItemType = new ItemType()
+                                    order = new Order();
+
+                                    itemType = dbItemTypes.FirstOrDefault(it => it.ItemTypeName == transferModel.ItemType);
+
+                                    if (itemType is null)
                                     {
-                                        ItemTypeName = transferModel.ItemType
-                                    };
+                                        itemType = tempItemTypes.FirstOrDefault(it => it.ItemTypeName == transferModel.ItemType);
 
-                                    tempItemTypes.Add(newItemType);
+                                        if (itemType is null)
+                                        {
+                                            ItemType newItemType = new ItemType()
+                                            {
+                                                ItemTypeName = transferModel.ItemType
+                                            };
 
-                                    itemType = newItemType;
+                                            tempItemTypes.Add(newItemType);
+
+                                            itemType = newItemType;
+                                        }
+                                    }
+
+                                    List<TransferModel> salesInOrder = transferModelKeyValuePair.Value
+                                        .Where(m => m.OrderId == transferModel.OrderId)
+                                        .ToList();
+                                    foreach (TransferModel saleInOrder in salesInOrder)
+                                    {
+                                        desiredSale = dbSales.FirstOrDefault(s => DateTime.Equals(s.ShipDate,
+                                            DateTime.ParseExact(transferModel.ShipDate, "M/d/yyyy", CultureInfo.InvariantCulture))
+                                        && s.TotalProfit == Decimal.Parse(transferModel.TotalProfit));
+
+                                        if (desiredSale is null)
+                                        {
+                                            desiredSale = tempSales.FirstOrDefault(s => DateTime.Equals(s.ShipDate,
+                                            DateTime.ParseExact(transferModel.ShipDate, "M/d/yyyy", CultureInfo.InvariantCulture))
+                                            && s.TotalProfit == Decimal.Parse(transferModel.TotalProfit));
+
+                                            if (desiredSale is null)
+                                            {
+                                                Sale sale = new Sale()
+                                                {
+                                                    ShipDate = DateTime.ParseExact(transferModel.ShipDate, "M/d/yyyy", CultureInfo.InvariantCulture),
+                                                    UnitsSold = int.Parse(transferModel.UnitsSold),
+                                                    UnitPrice = Decimal.Parse(transferModel.UnitPrice),
+                                                    UnitCost = Decimal.Parse(transferModel.UnitCost),
+                                                    TotalRevenue = Decimal.Parse(transferModel.TotalRevenue),
+                                                    TotalCost = Decimal.Parse(transferModel.TotalCost),
+                                                    TotalProfit = Decimal.Parse(transferModel.TotalProfit),
+                                                    Order = order,
+                                                    ItemType = itemType,
+                                                    FileDate = date
+                                                };
+
+                                                desiredSale = sale;
+
+                                                sales.Add(desiredSale);
+
+                                                tempSales.Add(sale);
+                                            }
+                                        }
+                                    }
+
+                                    country = dbCountries.FirstOrDefault(c => c.Name == transferModel.Country);
+                                    if (country is null)
+                                    {
+                                        country = tempCountries.FirstOrDefault(c => c.Name == transferModel.Country);
+                                        if (country is null)
+                                        {
+                                            region = dbRegions.FirstOrDefault(r => r.Name == transferModel.Region);
+
+                                            if (region is null)
+                                            {
+                                                region = tempRegions.FirstOrDefault(r => r.Name == transferModel.Region);
+                                                if (region is null)
+                                                {
+                                                    Region newRegion = new Region()
+                                                    {
+                                                        Name = transferModel.Region
+                                                    };
+
+                                                    tempRegions.Add(newRegion);
+
+                                                    region = newRegion;
+                                                }
+                                            }
+
+                                            Country newCountry = new Country()
+                                            {
+                                                Name = transferModel.Country,
+                                                Region = region,
+                                            };
+
+                                            tempCountries.Add(newCountry);
+
+                                            country = newCountry;
+                                        }
+                                    }
+
+                                    order.Id = transferModel.OrderId;
+                                    order.OrderPriority = transferModel.OrderPriority;
+                                    order.OrderDate = DateTime.ParseExact(transferModel.OrderDate, "M/d/yyyy", CultureInfo.InvariantCulture);
+                                    order.SalesChannel = transferModel.SalesChannel;
+                                    order.Sales = sales;
+                                    order.Country = country;
+                                    order.FileDate = date;
+
+                                    tempOrders.Add(order);
                                 }
                             }
-
-                            List<TransferModel> salesInOrder = transferModels.Where(m => m.OrderId == transferModel.OrderId).ToList();
-                            foreach (TransferModel saleInOrder in salesInOrder)
-                            {
-                                desiredSale = dbSales.FirstOrDefault(s => DateTime.Equals(s.ShipDate,
-                                    DateTime.ParseExact(transferModel.ShipDate, "M/d/yyyy", CultureInfo.InvariantCulture))
-                                && s.TotalProfit == Decimal.Parse(transferModel.TotalProfit));
-
-                                if (desiredSale is null)
-                                {
-                                    desiredSale = tempSales.FirstOrDefault(s => DateTime.Equals(s.ShipDate,
-                                    DateTime.ParseExact(transferModel.ShipDate, "M/d/yyyy", CultureInfo.InvariantCulture))
-                                    && s.TotalProfit == Decimal.Parse(transferModel.TotalProfit));
-
-                                    if (desiredSale is null)
-                                    {
-                                        Sale sale = new Sale()
-                                        {
-                                            ShipDate = DateTime.ParseExact(transferModel.ShipDate, "M/d/yyyy", CultureInfo.InvariantCulture),
-                                            UnitsSold = int.Parse(transferModel.UnitsSold),
-                                            UnitPrice = Decimal.Parse(transferModel.UnitPrice),
-                                            UnitCost = Decimal.Parse(transferModel.UnitCost),
-                                            TotalRevenue = Decimal.Parse(transferModel.TotalRevenue),
-                                            TotalCost = Decimal.Parse(transferModel.TotalCost),
-                                            TotalProfit = Decimal.Parse(transferModel.TotalProfit),
-                                            Order = order,
-                                            ItemType = itemType
-                                        };
-
-                                        desiredSale = sale;
-
-                                        sales.Add(desiredSale);
-
-                                        tempSales.Add(sale);
-                                    }
-                                }
                         }
-
-                        country = dbCountries.FirstOrDefault(c => c.Name == transferModel.Country);
-                        if (country is null)
-                        {
-                            country = tempCountries.FirstOrDefault(c => c.Name == transferModel.Country);
-                            if (country is null)
-                            {
-                                region = dbRegions.FirstOrDefault(r => r.Name == transferModel.Region);
-
-                                if (region is null)
-                                {
-                                    region = tempRegions.FirstOrDefault(r => r.Name == transferModel.Region);
-                                    if (region is null)
-                                    {
-                                        Region newRegion = new Region()
-                                        {
-                                            Name = transferModel.Region
-                                        };
-
-                                        tempRegions.Add(newRegion);
-
-                                        region = newRegion;
-                                    }
-                                }
-
-                                Country newCountry = new Country()
-                                {
-                                    Name = transferModel.Country,
-                                    Region = region,
-                                };
-
-                                tempCountries.Add(newCountry);
-
-                                country = newCountry;
-                            }
-                        }
-
-                        order.Id = transferModel.OrderId;
-                        order.OrderPriority = transferModel.OrderPriority;
-                        order.OrderDate = DateTime.ParseExact(transferModel.OrderDate, "M/d/yyyy", CultureInfo.InvariantCulture);
-                        order.SalesChannel = transferModel.SalesChannel;
-                        order.Sales = sales;
-                        order.Country = country;
-
-                        tempOrders.Add(order);
-
-                        
-                        
-                        }
+                
                     }
+                
                 }
             }
 
@@ -201,7 +217,7 @@
             return data;
         }
 
-        public void SaveToDb(DataObject data)
+        public void SaveDataToDatabase(DataObject data)
         {
             this.DbContext.ItemTypes.AddRange(data.ItemTypes);
             this.DbContext.Countries.AddRange(data.Countries);
@@ -209,14 +225,21 @@
             this.DbContext.Sales.AddRange(data.Sales);
             this.DbContext.Orders.AddRange(data.Orders);
 
-            foreach (string fileName in data.LastReadFiles)
+            List<LastReadFile> dates = new List<LastReadFile>();
+
+            foreach (DateTime fileName in data.LastReadFiles)
             {
-                DbContext.LastReadFiles.Add(
-                new LastReadFile()
+                LastReadFile lastReadFile = new LastReadFile()
                 {
-                    LastReadFileDateTime = DateTime.Parse(fileName)
-                });
+                    LastReadFileDateTime = fileName
+                };
+
+                dates.Add(lastReadFile);
+
+                Console.WriteLine(lastReadFile);
             }
+
+            this.DbContext.LastReadFiles.AddRange(dates);
 
             DbContext.SaveChanges();
         }
