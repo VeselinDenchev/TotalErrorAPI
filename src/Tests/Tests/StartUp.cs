@@ -1,5 +1,8 @@
 ﻿namespace Tests
 {
+    using System.Collections.Generic;
+
+    using Data.Models.Models;
     using Data.Services.DtoModels;
     using Data.Services.Implementations;
     using Data.TotalErrorDbContext;
@@ -8,14 +11,14 @@
     {
         public static void Main()
         {
-            FileReader fileReader = new FileReader(new TotalErrorDbContext());
-            List<TransferModel> models = fileReader.ReadFileFromDirectory(@"E:\read_files");
+            BaseService baseService = new BaseService(new TotalErrorDbContext());
+            List<List<TransferModel>> transferModelsByFile = baseService.ReadFilesFromDirectory(@"E:\read_files", out List<string> fileNames);
 
-            //TransformerModel transformerModel = new TransformerModel();
-            //var list = transformerModel.Convert(models);
+            DataObject data = baseService.Convert(transferModelsByFile);
+            data.LastReadFiles = fileNames;
 
-            //DatabaseService db = new DatabaseService(new ApplicationDbContext());
-            //db.SaveDataToDb(list);
+            baseService.Convert(transferModelsByFile);
+            baseService.SaveToDb(data);
 
             /*MapperConfiguration config = new MapperConfiguration(cfg => cfg.CreateMap<Company, CompanyDto>());
             Mapper mapper = new Mapper(config);
