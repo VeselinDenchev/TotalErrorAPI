@@ -4,6 +4,6 @@
     {
         public string Name { get; set; }
 
-        public ICollection<CountryDto> Countries { get; set; }
+        //public ICollection<CountryDto> Countries { get; set; }
     }
 }

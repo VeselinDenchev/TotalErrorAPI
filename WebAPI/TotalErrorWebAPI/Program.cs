@@ -17,6 +17,9 @@ builder.Services.AddScoped<TotalErrorDbContext>();
 builder.Services.AddAutoMapper(typeof(MapProfile));
 //builder.Services.AddScoped<IBaseService, BaseService>();
 builder.Services.AddScoped<IOrdersMainService, OrdersMainService>();
+builder.Services.AddScoped<ICountriesMainService, CountriesMainService>();
+builder.Services.AddScoped<IRegionsMainService, RegionsMainService>();
+builder.Services.AddScoped<IItemTypesMainService, ItemTypesMainService>();
 
 var app = builder.Build();
 

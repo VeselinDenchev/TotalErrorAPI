@@ -289,7 +289,7 @@ namespace Data.TotalErrorDbContext.Migrations
             modelBuilder.Entity("Data.Models.Models.Country", b =>
                 {
                     b.HasOne("Data.Models.Models.Region", "Region")
-                        .WithMany("Countries")
+                        .WithMany()
                         .HasForeignKey("RegionId");
 
                     b.Navigation("Region");
@@ -328,11 +328,6 @@ namespace Data.TotalErrorDbContext.Migrations
             modelBuilder.Entity("Data.Models.Models.Order", b =>
                 {
                     b.Navigation("Sales");
-                });
-
-            modelBuilder.Entity("Data.Models.Models.Region", b =>
-                {
-                    b.Navigation("Countries");
                 });
 #pragma warning restore 612, 618
         }
