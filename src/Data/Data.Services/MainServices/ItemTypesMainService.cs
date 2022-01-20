@@ -20,7 +20,7 @@
 
         public List<ItemTypeDto> GetItemTypes()
         {
-            var itemTypes = this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.ToList());
+            var itemTypes = this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.Where(it => it.IsDeleted == false).ToList());
 
             return itemTypes;
         }

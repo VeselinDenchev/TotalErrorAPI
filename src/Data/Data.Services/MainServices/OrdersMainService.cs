@@ -20,10 +20,10 @@
 
         public List<OrderDto> GetOrders()
         {
-            this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.ToList());
-            this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.ToList());
-            this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.ToList());
-            var orders = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.ToList());
+            this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.Where(c => c.IsDeleted == false).ToList());
+            this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.Where(s => s.IsDeleted == false).ToList());
+            this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.Where(it => it.IsDeleted == false).ToList());
+            var orders = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.Where(o => o.IsDeleted == false).ToList());
 
             return orders;
         }
@@ -31,11 +31,11 @@
         public List<IGrouping<RegionDto, OrderDto>> GetOrdersGroupedByRegion(out Dictionary<RegionDto, decimal> countriesTotalCost,
             out Dictionary<RegionDto, decimal> countriesTotalProfit)
         {
-            this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.ToList());
-            this.Mapper.Map<List<RegionDto>>(this.DbContext.Regions.ToList());
-            this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.ToList());
-            this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.ToList());
-            var result = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.ToList());
+            this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.Where(c => c.IsDeleted == false).ToList());
+            this.Mapper.Map<List<RegionDto>>(this.DbContext.Sales.Where(r => r.IsDeleted == false).ToList());
+            this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.Where(s => s.IsDeleted == false).ToList());
+            this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.Where(it => it.IsDeleted == false).ToList());
+            var result = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.Where(o => o.IsDeleted == false).ToList());
             var groupedByRegionResult = result.GroupBy(r => r.Country.Region).ToList();
 
             countriesTotalCost = new Dictionary<RegionDto, decimal>();
@@ -67,10 +67,10 @@
         public List<IGrouping<CountryDto, OrderDto>> GetOrdersGroupedByCountry(out Dictionary<CountryDto, decimal> countriesTotalCost,
             out Dictionary<CountryDto, decimal> countriesTotalProfit)
         {
-            this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.ToList());
-            this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.ToList());
-            this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.ToList());
-            var result = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.ToList());
+            this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.Where(c => c.IsDeleted == false).ToList());
+            this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.Where(s => s.IsDeleted == false).ToList());
+            this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.Where(it => it.IsDeleted == false).ToList());
+            var result = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.Where(o => o.IsDeleted == false).ToList());
             var groupedByCountryResult = result.GroupBy(c => c.Country).ToList();
 
             countriesTotalCost = new Dictionary<CountryDto, decimal>();
@@ -102,10 +102,10 @@
         public List<IGrouping<DateTime, OrderDto>> GetOrdersGroupedByOrderDate(out Dictionary<DateTime, decimal> countriesTotalCost,
             out Dictionary<DateTime, decimal> countriesTotalProfit)
         {
-            this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.ToList());
-            this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.ToList());
-            this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.ToList());
-            var result = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.ToList());
+            this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.Where(c => c.IsDeleted == false).ToList());
+            this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.Where(s => s.IsDeleted == false).ToList());
+            this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.Where(it => it.IsDeleted == false).ToList());
+            var result = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.Where(o => o.IsDeleted == false).ToList());
             var groupedByOrderDateResult = result.GroupBy(od => od.OrderDate).ToList();
 
             countriesTotalCost = new Dictionary<DateTime, decimal>();

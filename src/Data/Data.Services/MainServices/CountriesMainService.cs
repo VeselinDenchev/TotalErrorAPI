@@ -21,7 +21,7 @@
         public List<CountryDto> GetCountries()
         {
             this.Mapper.Map<List<RegionDto>>(this.DbContext.Regions.ToList());
-            var countries = this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.ToList());
+            var countries = this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.Where(c => c.IsDeleted == false).ToList());
 
             return countries;
         }

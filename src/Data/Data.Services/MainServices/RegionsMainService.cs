@@ -21,7 +21,7 @@ namespace Data.Services.MainServices
 
         public List<RegionDto> GetRegions()
         {
-            var regions = this.Mapper.Map<List<RegionDto>>(this.DbContext.Regions.ToList());
+            var regions = this.Mapper.Map<List<RegionDto>>(this.DbContext.Regions.Where(r => r.IsDeleted == false).ToList());
 
             return regions;
         }
