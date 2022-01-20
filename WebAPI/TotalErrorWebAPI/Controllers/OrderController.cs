@@ -22,18 +22,18 @@
         [Route("api/[controller]/orders")]
         public IActionResult GetOrders()
         {
-            var result = OrdersMainService.GetOrders();
+            var orders = OrdersMainService.GetOrders();
 
-            return Ok(result);
+            return Ok(orders);
         }
 
         [Route("api/[controller]/orders_grouped_by_region")]
         public IActionResult GetOrdersGroupedByRegion()
         {
-            var result = OrdersMainService.GetOrdersGroupedByRegion(out Dictionary<RegionDto, decimal> countriesTotalCost,
+            var orders = OrdersMainService.GetOrdersGroupedByRegion(out Dictionary<RegionDto, decimal> countriesTotalCost,
                 out Dictionary<RegionDto, decimal> countriesTotalProfit);
 
-            GroupedOrdersDtoModel<RegionDto> groupedModel = new GroupedOrdersDtoModel<RegionDto>(result,
+            GroupedOrdersDtoModel<RegionDto> groupedModel = new GroupedOrdersDtoModel<RegionDto>(orders,
                 countriesTotalCost, countriesTotalProfit);
             var jsonObject = JsonConvert.SerializeObject(groupedModel);
 
@@ -43,10 +43,10 @@
         [Route("api/[controller]/orders_grouped_by_country")]
         public IActionResult GetOrdersGroupedByCountry()
         {
-            var result = OrdersMainService.GetOrdersGroupedByCountry(out Dictionary<CountryDto, decimal> countriesTotalCost,
+            var orders = OrdersMainService.GetOrdersGroupedByCountry(out Dictionary<CountryDto, decimal> countriesTotalCost,
                 out Dictionary<CountryDto, decimal> countriesTotalProfit);
 
-            GroupedOrdersDtoModel<CountryDto> groupedModel = new GroupedOrdersDtoModel<CountryDto>(result, 
+            GroupedOrdersDtoModel<CountryDto> groupedModel = new GroupedOrdersDtoModel<CountryDto>(orders, 
                 countriesTotalCost, countriesTotalProfit);
             var jsonObject = JsonConvert.SerializeObject(groupedModel);
 
@@ -57,10 +57,10 @@
         [Route("api/[controller]/orders_grouped_by_order_date")]
         public IActionResult GetOrdersGroupedByOrderDate()
         {
-            var result = OrdersMainService.GetOrdersGroupedByOrderDate(out Dictionary<DateTime, decimal> countriesTotalCost,
+            var orders = OrdersMainService.GetOrdersGroupedByOrderDate(out Dictionary<DateTime, decimal> countriesTotalCost,
                 out Dictionary<DateTime, decimal> countriesTotalProfit);
 
-            GroupedOrdersDtoModel<DateTime> groupedModel = new GroupedOrdersDtoModel<DateTime>(result,
+            GroupedOrdersDtoModel<DateTime> groupedModel = new GroupedOrdersDtoModel<DateTime>(orders,
                 countriesTotalCost, countriesTotalProfit);
             var jsonObject = JsonConvert.SerializeObject(groupedModel);
 

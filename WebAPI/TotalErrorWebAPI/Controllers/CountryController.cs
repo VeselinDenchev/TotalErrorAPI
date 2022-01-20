@@ -17,9 +17,9 @@
 
         public IActionResult GetAllCountries()
         {
-            var result = this.OrdersMainService.GetCountries();
+            var countries = this.OrdersMainService.GetCountries();
 
-            return Ok(result);
+            return Ok(countries);
         }
     }
 }
