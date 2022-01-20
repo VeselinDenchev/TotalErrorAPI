@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Interfaces
 {
-    internal interface IDeletedInfo<T>
+    public interface IDeletedInfo<T>
     {
         public DateTime? DeletedAt { get; set; }
 

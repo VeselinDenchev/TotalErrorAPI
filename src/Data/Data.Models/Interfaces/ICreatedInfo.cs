@@ -1,6 +1,6 @@
 ﻿namespace Data.Models.Interfaces
 {
-    internal interface ICreatedInfo<T>
+    public interface ICreatedInfo<T>
     {
         public DateTime CreatedAt { get; set; }
 

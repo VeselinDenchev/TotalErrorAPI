@@ -12,6 +12,6 @@
 
         public CountryDto Country { get; set; }
 
-        public string FileDate { get; set; }
+        //public string FileDate { get; set; }
     }
 }
