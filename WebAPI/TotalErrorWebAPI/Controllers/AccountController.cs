@@ -11,12 +11,15 @@
     [ApiController]
     public class AccountController : ControllerBase
     {
-        public AccountController(UserManager<User> userManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             UserManager = userManager;
+            SignInManager = signInManager;
         }
 
         public UserManager<User> UserManager { get; set; }
+
+        public SignInManager<User> SignInManager { get; set; }
 
         [HttpPost]
         [Route("api/[controller]/register")]
@@ -37,6 +40,26 @@
                 {
                     return Ok();
                 }
+                return BadRequest();
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        [Route("api/[controller]/login")]
+        public async Task<IActionResult> Login([FromBody] LoginViewModel loginModel)
+        {
+            var checkUser = await UserManager.FindByEmailAsync(loginModel.Email);
+
+            var checkPassword = await SignInManager.CheckPasswordSignInAsync(checkUser, loginModel.Password, lockoutOnFailure: false);
+            if (checkUser is not null)
+            {
+                if (checkPassword.Succeeded)
+                {
+                    return Ok();
+                }
+
                 return BadRequest();
             }
 
