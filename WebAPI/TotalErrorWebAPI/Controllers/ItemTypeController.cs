@@ -15,6 +15,7 @@
 
         public IItemTypesMainService ItemTypesMainService { get; set; }
 
+        [HttpGet]
         public IActionResult GetAllItemTypes()
         {
             var itemTypes = ItemTypesMainService.GetItemTypes();

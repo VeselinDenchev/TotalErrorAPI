@@ -15,6 +15,8 @@
 
         public IRegionsMainService RegionsMainService { get; }
 
+        
+        [HttpGet]
         public IActionResult GetAllRegions()
         {
             var regions = this.RegionsMainService.GetRegions();

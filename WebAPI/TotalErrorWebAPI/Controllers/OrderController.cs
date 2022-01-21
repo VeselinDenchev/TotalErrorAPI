@@ -19,6 +19,7 @@
 
         public IOrdersMainService OrdersMainService { get; }
 
+        [HttpGet]
         [Route("api/[controller]/orders")]
         public IActionResult GetOrders()
         {
@@ -27,6 +28,7 @@
             return Ok(orders);
         }
 
+        [HttpGet]
         [Route("api/[controller]/orders_grouped_by_region")]
         public IActionResult GetOrdersGroupedByRegion()
         {
@@ -40,6 +42,7 @@
             return Ok(jsonObject);
         }
 
+        [HttpGet]
         [Route("api/[controller]/orders_grouped_by_country")]
         public IActionResult GetOrdersGroupedByCountry()
         {
@@ -54,6 +57,7 @@
             return Ok(jsonObject);
         }
 
+        [HttpGet]
         [Route("api/[controller]/orders_grouped_by_order_date")]
         public IActionResult GetOrdersGroupedByOrderDate()
         {

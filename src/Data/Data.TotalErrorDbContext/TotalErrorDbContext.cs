@@ -7,8 +7,9 @@
     using Microsoft.Extensions.Configuration;
 
     using System.Reflection;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-    public class TotalErrorDbContext : DbContext
+    public class TotalErrorDbContext : IdentityDbContext<User>
     {
         public DbSet<Country> Countries { get; set; }
 

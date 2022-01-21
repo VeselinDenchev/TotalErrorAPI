@@ -1,8 +1,16 @@
+using Data.Models.Models;
 using Data.Services.Implementations;
 using Data.Services.Interfaces;
 using Data.Services.MainServices;
 using Data.Services.MapperProfiles;
 using Data.TotalErrorDbContext;
+
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +19,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c => 
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "TotalErrorWebAPI",
+        Version = "v1",
+    });
+});
 
 builder.Services.AddScoped<TotalErrorDbContext>();
 builder.Services.AddAutoMapper(typeof(MapProfile));
@@ -20,6 +35,39 @@ builder.Services.AddScoped<IOrdersMainService, OrdersMainService>();
 builder.Services.AddScoped<ICountriesMainService, CountriesMainService>();
 builder.Services.AddScoped<IRegionsMainService, RegionsMainService>();
 builder.Services.AddScoped<IItemTypesMainService, ItemTypesMainService>();
+
+builder.Services.AddIdentity<User, UserRole>().AddEntityFrameworkStores<TotalErrorDbContext>().AddDefaultTokenProviders();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequiredLength = 3;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+});
+
+//JWT start
+builder.Services.AddAuthentication(a =>
+{
+    a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    a.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    a.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(b =>
+{
+    b.SaveToken = true;
+    b.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:TokenSecret"]))
+    };
+});
+
+builder.Services.AddAuthorization();
+//JWT end
 
 var app = builder.Build();
 
@@ -37,3 +85,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+app.UseAuthentication();
+
+app.UseAuthorization();

@@ -15,6 +15,7 @@
 
         public ICountriesMainService OrdersMainService { get; }
 
+        [HttpGet]
         public IActionResult GetAllCountries()
         {
             var countries = this.OrdersMainService.GetCountries();

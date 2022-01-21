@@ -32,7 +32,7 @@
             out Dictionary<RegionDto, decimal> countriesTotalProfit)
         {
             this.Mapper.Map<List<CountryDto>>(this.DbContext.Countries.Where(c => c.IsDeleted == false).ToList());
-            this.Mapper.Map<List<RegionDto>>(this.DbContext.Sales.Where(r => r.IsDeleted == false).ToList());
+            this.Mapper.Map<List<RegionDto>>(this.DbContext.Regions.Where(r => r.IsDeleted == false).ToList());
             this.Mapper.Map<List<SaleDto>>(this.DbContext.Sales.Where(s => s.IsDeleted == false).ToList());
             this.Mapper.Map<List<ItemTypeDto>>(this.DbContext.ItemTypes.Where(it => it.IsDeleted == false).ToList());
             var result = this.Mapper.Map<List<OrderDto>>(this.DbContext.Orders.Where(o => o.IsDeleted == false).ToList());
