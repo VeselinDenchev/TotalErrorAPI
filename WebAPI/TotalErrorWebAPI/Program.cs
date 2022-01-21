@@ -1,4 +1,5 @@
 using Data.Models.Models;
+using Data.Services.DtoModels;
 using Data.Services.Implementations;
 using Data.Services.Interfaces;
 using Data.Services.MainServices;
@@ -36,6 +37,11 @@ builder.Services.AddScoped<ICountriesMainService, CountriesMainService>();
 builder.Services.AddScoped<IRegionsMainService, RegionsMainService>();
 builder.Services.AddScoped<IItemTypesMainService, ItemTypesMainService>();
 
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.Configure<TokenModel>(builder.Configuration.GetSection("JWT"));
+var token = builder.Configuration.GetSection("JWT").Get<TokenModel>();
+var secret = Encoding.ASCII.GetBytes(token.TokenSecret);
+
 builder.Services.AddIdentity<User, UserRole>().AddEntityFrameworkStores<TotalErrorDbContext>().AddDefaultTokenProviders();
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -60,9 +66,9 @@ builder.Services.AddAuthentication(a =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:TokenSecret"]))
+        ValidAudience = builder.Configuration["JWT:ValidateAudience"],
+        ValidIssuer = builder.Configuration["JWT:ValidateIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:secret"]))
     };
 });
 
