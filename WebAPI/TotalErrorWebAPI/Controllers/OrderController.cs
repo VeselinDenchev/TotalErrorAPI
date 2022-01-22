@@ -8,7 +8,7 @@
 
     using Newtonsoft.Json;
 
-    //[Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -20,7 +20,7 @@
         public IOrdersMainService OrdersMainService { get; }
 
         [HttpGet]
-        [Route("api/[controller]/orders")]
+        [Route("all")]
         public IActionResult GetOrders()
         {
             var orders = OrdersMainService.GetOrders();
@@ -29,7 +29,7 @@
         }
 
         [HttpGet]
-        [Route("api/[controller]/orders_grouped_by_region")]
+        [Route("orders_grouped_by_region")]
         public IActionResult GetOrdersGroupedByRegion()
         {
             var orders = OrdersMainService.GetOrdersGroupedByRegion(out Dictionary<RegionDto, decimal> countriesTotalCost,
@@ -43,7 +43,7 @@
         }
 
         [HttpGet]
-        [Route("api/[controller]/orders_grouped_by_country")]
+        [Route("orders_grouped_by_country")]
         public IActionResult GetOrdersGroupedByCountry()
         {
             var orders = OrdersMainService.GetOrdersGroupedByCountry(out Dictionary<CountryDto, decimal> countriesTotalCost,
@@ -58,7 +58,7 @@
         }
 
         [HttpGet]
-        [Route("api/[controller]/orders_grouped_by_order_date")]
+        [Route("orders_grouped_by_order_date")]
         public IActionResult GetOrdersGroupedByOrderDate()
         {
             var orders = OrdersMainService.GetOrdersGroupedByOrderDate(out Dictionary<DateTime, decimal> countriesTotalCost,

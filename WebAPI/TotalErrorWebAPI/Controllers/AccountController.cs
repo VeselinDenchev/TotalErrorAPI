@@ -10,7 +10,7 @@
     using Data.Services.Implementations;
     using Data.Services.Interfaces;
 
-    //[Route("api/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -28,7 +28,7 @@
         public IJwtTokenService JwtService { get; set; }
 
         [HttpPost]
-        [Route("api/[controller]/register")]
+        [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel registerModel)
         {
             var checkUser = await UserManager.FindByEmailAsync(registerModel.Email);
@@ -59,7 +59,7 @@
         }
 
         [HttpPost]
-        [Route("api/[controller]/login")]
+        [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel loginModel)
         {
             var checkUser = await UserManager.FindByEmailAsync(loginModel.Email);

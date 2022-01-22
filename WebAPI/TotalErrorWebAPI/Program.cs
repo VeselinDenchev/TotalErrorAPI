@@ -11,7 +11,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
+
 using System.Text;
+
+using TotalErrorWebAPI.Scheduler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +59,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireUppercase = false;
 });
 
-//JWT start
+// JWT start
 builder.Services.AddAuthentication(a =>
 {
     a.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -68,12 +74,25 @@ builder.Services.AddAuthentication(a =>
         ValidateAudience = true,
         ValidAudience = builder.Configuration["JWT:ValidateAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidateIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:secret"]))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:TokenSecret"]))
     };
 });
 
 builder.Services.AddAuthorization();
-//JWT end
+// JWT end
+
+// Quartz start
+builder.Services.AddSingleton<IJobFactory, SingletonJobFactory>();
+builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+
+builder.Services.AddSingleton<SchedulerReader>();
+builder.Services.AddSingleton(new JobSchedule(
+    jobType: typeof(SchedulerReader),
+    cronExpression: "0 * * ? * *"
+    ));
+
+builder.Services.AddHostedService<QuartzHostedService>();
+// Quartz end
 
 var app = builder.Build();
 
