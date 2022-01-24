@@ -4,6 +4,7 @@ using Data.TotalErrorDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.TotalErrorDbContext.Migrations
 {
     [DbContext(typeof(TotalErrorDbContext))]
-    partial class TotalErrorDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220123101808_Make_FileDate_column_in_Sales_and_Orders_tables_nullable")]
+    partial class Make_FileDate_column_in_Sales_and_Orders_tables_nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

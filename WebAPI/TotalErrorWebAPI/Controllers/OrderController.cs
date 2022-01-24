@@ -1,10 +1,13 @@
 ﻿namespace TotalErrorWebAPI.Controllers
 {
+    using Data.Models.Models;
     using Data.Services.DtoModels;
     using Data.Services.Interfaces;
+    using Data.TotalErrorDbContext;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
 
     using Newtonsoft.Json;
 
@@ -12,12 +15,15 @@
     [ApiController]
     public class OrderController : ControllerBase
     {
-        public OrderController(IOrdersMainService ordersMainService)
+        public OrderController(IOrdersMainService ordersMainService, TotalErrorDbContext dbContext)
         {
             this.OrdersMainService = ordersMainService;
+            this.DbContext = dbContext;
         }
 
         public IOrdersMainService OrdersMainService { get; }
+
+        public TotalErrorDbContext DbContext { get; }
 
         [HttpGet]
         [Route("all")]
@@ -32,11 +38,11 @@
         [Route("orders_grouped_by_region")]
         public IActionResult GetOrdersGroupedByRegion()
         {
-            var orders = OrdersMainService.GetOrdersGroupedByRegion(out Dictionary<RegionDto, decimal> countriesTotalCost,
-                out Dictionary<RegionDto, decimal> countriesTotalProfit);
+            var orders = OrdersMainService.GetOrdersGroupedByRegion(out Dictionary<RegionDto, decimal> regionsTotalCost,
+                out Dictionary<RegionDto, decimal> regionsTotalProfit);
 
             GroupedOrdersDtoModel<RegionDto> groupedModel = new GroupedOrdersDtoModel<RegionDto>(orders,
-                countriesTotalCost, countriesTotalProfit);
+                regionsTotalCost, regionsTotalProfit);
             var jsonObject = JsonConvert.SerializeObject(groupedModel);
 
             return Ok(jsonObject);
@@ -53,7 +59,6 @@
                 countriesTotalCost, countriesTotalProfit);
             var jsonObject = JsonConvert.SerializeObject(groupedModel);
 
-
             return Ok(jsonObject);
         }
 
@@ -61,14 +66,84 @@
         [Route("orders_grouped_by_order_date")]
         public IActionResult GetOrdersGroupedByOrderDate()
         {
-            var orders = OrdersMainService.GetOrdersGroupedByOrderDate(out Dictionary<DateTime, decimal> countriesTotalCost,
-                out Dictionary<DateTime, decimal> countriesTotalProfit);
+            var orders = OrdersMainService.GetOrdersGroupedByOrderDate(out Dictionary<DateTime, decimal> datesTotalCost,
+                out Dictionary<DateTime, decimal> datesTotalProfit);
 
             GroupedOrdersDtoModel<DateTime> groupedModel = new GroupedOrdersDtoModel<DateTime>(orders,
-                countriesTotalCost, countriesTotalProfit);
+                datesTotalCost, datesTotalProfit);
             var jsonObject = JsonConvert.SerializeObject(groupedModel);
 
             return Ok(jsonObject);
+        }
+
+        [HttpPost]
+        [Route("add")]
+        public IActionResult AddOrder([FromBody] OrderDto order)
+        {
+            bool isValid = order.SalesChannel is not null && order.Sales is not null && order.OrderPriority is not null 
+                && order.Country is not null && order.Country.Region is not null;
+
+            if (!isValid)
+            {
+                return BadRequest("Invalid order data!");
+            }
+
+            bool isAlreadyInTheDatabase = false;
+
+            foreach (SaleDto sale in order.Sales)
+            {
+                isAlreadyInTheDatabase = this.DbContext.Sales.Any(s => s.ShipDate == sale.ShipDate && s.UnitsSold == sale.UnitsSold
+                && s.UnitPrice == sale.UnitPrice && s.UnitCost == sale.UnitCost && s.TotalRevenue == sale.TotalRevenue
+                && s.TotalCost == sale.TotalCost && s.TotalProfit == sale.TotalProfit && s.ItemType.ItemTypeName == sale.ItemType.ItemTypeName 
+                && s.IsDeleted == false);
+
+                if (isAlreadyInTheDatabase)
+                {
+                    break;
+                }
+            }
+
+            if (isAlreadyInTheDatabase)
+            {
+                return BadRequest("A sale is already in the database!");
+            }
+
+            this.OrdersMainService.AddOrder(order);
+
+            return Ok(order);
+        }
+
+        [HttpPost]
+        [Route("update/{orderId}")]
+        public IActionResult UpdateOrder(string orderId, [FromBody] OrderDto order)
+        {
+            Order initialOrder = this.DbContext.Orders.Where(o => o.Id == orderId && o.IsDeleted == false)
+                                                        .Include(o => o.Sales.Where(s => s.IsDeleted == false)).FirstOrDefault();
+            if (initialOrder is null)
+            {
+                return BadRequest("Order with such id doesn't exist!");
+            }
+
+            this.OrdersMainService.UpdateOrder(initialOrder, order);
+
+            return Ok(order);
+        }
+
+        [HttpPost]
+        [Route("delete/{orderId}")]
+        public IActionResult DeleteOrder(string orderId)
+        {
+            Order order = this.DbContext.Orders.Where(o => o.Id == orderId && o.IsDeleted == false)
+                                                        .Include(o => o.Sales.Where(s => s.IsDeleted == false)).FirstOrDefault();
+            
+            if (order is null)
+            {
+                return BadRequest("Order with such id doesn't exist!");
+            }
+
+            this.OrdersMainService.DeleteOrder(order);
+
+            return Ok("Order is successfully deleted!");
         }
     }
 }

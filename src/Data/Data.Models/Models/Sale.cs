@@ -20,12 +20,8 @@
 
         public Order Order { get; set; }
 
-        //public string OrderId { get; set; }
-
         public ItemType ItemType { get; set; }
 
-        public string FileDate { get; set; }
-
-        //public string ItemTypeId { get; set; }
+        public string? FileDate { get; set; }
     }
 }

@@ -20,6 +20,6 @@
 
         public ItemTypeDto ItemType { get; set; }
 
-        public string FileDate { get; set; }
+        //public string FileDate { get; set; }
     }
 }

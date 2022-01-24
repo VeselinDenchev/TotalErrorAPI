@@ -4,10 +4,8 @@
     using Data.Services.ViewModels;
     using Data.Services.DtoModels;
 
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Data.Services.Implementations;
     using Data.Services.Interfaces;
 
     [Route("api/[controller]")]

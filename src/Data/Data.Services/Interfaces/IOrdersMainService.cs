@@ -1,5 +1,6 @@
 ﻿namespace Data.Services.Interfaces
 {
+    using Data.Models.Models;
     using Data.Services.DtoModels;
 
     public interface IOrdersMainService
@@ -14,5 +15,11 @@
 
         public List<IGrouping<DateTime, OrderDto>> GetOrdersGroupedByOrderDate(out Dictionary<DateTime, decimal> countriesTotalCost,
             out Dictionary<DateTime, decimal> countriesTotalProfit);
+
+        public void AddOrder(OrderDto orderDto);
+
+        public void UpdateOrder(Order orderToBeUpdated, OrderDto orderDto);
+
+        public void DeleteOrder(Order order);
     }
 }
