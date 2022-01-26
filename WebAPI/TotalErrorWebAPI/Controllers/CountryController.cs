@@ -1,5 +1,7 @@
 ﻿namespace TotalErrorWebAPI.Controllers
 {
+    using Constants.Controllers;
+
     using Data.Services.DtoModels;
     using Data.Services.Interfaces;
 
@@ -9,10 +11,9 @@
 
     using Newtonsoft.Json;
 
-    [Route("api/[controller]")]
+    [Route(ControllerConstant.CONTROLLER_ROUTE)]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-
     public class CountryController : Controller
     {
         public CountryController(ICountriesMainService ordersMainService)
@@ -23,7 +24,7 @@
         public ICountriesMainService CountriesMainService { get; }
 
         [HttpGet]
-        [Route("all")]
+        [Route(CountryControllerConstant.GET_ALL_COUNTRIES_ROUTE)]
         public IActionResult GetAllCountries()
         {
             List<CountryDto> countries = this.CountriesMainService.GetCountries();
@@ -34,14 +35,14 @@
         }
 
         [HttpGet]
-        [Route("get_country_by_name/{countryName}")]
+        [Route(CountryControllerConstant.GET_COUNTRY_BY_NAME_ROUTE)]
         public IActionResult GetCountryByName([FromRoute] string countryName)
         {
             CountryDto country = this.CountriesMainService.GetCountryByName(countryName);
 
             if (country is null)
             {
-                return BadRequest("Invalid country data!");
+                return BadRequest(CountryControllerConstant.INVALID_COUNTRY_DATA_MESSAGE);
             }
 
             var countryJson = JsonConvert.SerializeObject(country);
@@ -50,12 +51,12 @@
         }
 
         [HttpPost]
-        [Route("add")]
+        [Route(CountryControllerConstant.ADD_COUNTRY_ROUTE)]
         public IActionResult AddCountry([FromBody] CountryDto country)
         {
             if (country.Name is null || country.Region is null)
             {
-                return BadRequest("Invalid country data!");
+                return BadRequest(CountryControllerConstant.INVALID_COUNTRY_DATA_MESSAGE);
             }
 
             this.CountriesMainService.AddCountry(country);
@@ -64,12 +65,12 @@
         }
 
         [HttpPost]
-        [Route("update/{countryName}")]
+        [Route(CountryControllerConstant.UPDATE_COUNTRY_ROUTE)]
         public IActionResult UpdateCountry([FromRoute]string countryName, [FromBody] CountryDto updatedCountry)
         {
             if (updatedCountry.Name is null || updatedCountry.Region is null)
             {
-                return BadRequest("Invalid country data!");
+                return BadRequest(CountryControllerConstant.INVALID_COUNTRY_DATA_MESSAGE);
             }
 
             this.CountriesMainService.UpdateCountry(countryName, updatedCountry);
@@ -78,17 +79,17 @@
         }
 
         [HttpPost]
-        [Route("delete/{countryName}")]
+        [Route(CountryControllerConstant.DELETE_COUNTRY_ROUTE)]
         public IActionResult DeleteCountry([FromRoute] string countryName)
         {
             if (countryName is null)
             {
-                return BadRequest("Invalid country name!");
+                return BadRequest(CountryControllerConstant.INVALID_COUNTRY_NAME_MESSAGE);
             }
 
             this.CountriesMainService.DeleteCountry(countryName);
 
-            return Ok($"{countryName} is deleted!");
+            return Ok(string.Format(CountryControllerConstant.COUNTRY_DELETED_SUCCESSFULLY_MESSAGE, countryName));
         }
     }
 }

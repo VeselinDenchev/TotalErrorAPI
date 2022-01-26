@@ -1,23 +1,24 @@
 ﻿namespace Data.Services.DtoModels
 {
     using Newtonsoft.Json;
+    using Constants;
 
-    [JsonObject("JWT")]
+    [JsonObject(TokenModelConstant.JWT)]
     public class TokenModel
     {
-        [JsonProperty("TokenSecret")]
+        [JsonProperty(TokenModelConstant.TOKEN_SECRET)]
         public string TokenSecret { get; set; }
 
-        [JsonProperty("ValidateIssuer")]
+        [JsonProperty(TokenModelConstant.VALIDATE_ISSUER)]
         public string ValidateIssuer { get; set; }
 
-        [JsonProperty("ValidateAudience")]
+        [JsonProperty(TokenModelConstant.VALIDATE_AUDIENCE)]
         public string ValidateAudience { get; set; }
 
-        [JsonProperty("AccessExpiration")]
+        [JsonProperty(TokenModelConstant.ACCESS_EXPIRATION)]
         public int AccessExpiration { get; set; }
 
-        [JsonProperty("RefreshExpiration")]
+        [JsonProperty(TokenModelConstant.REFRESH_EXPIRATION)]
         public int RefreshExpiration { get; set; }
     }
 }

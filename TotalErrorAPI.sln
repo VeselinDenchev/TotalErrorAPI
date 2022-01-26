@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data.Services", "src\Data\D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "src\Tests\Tests\Tests.csproj", "{C3D811F0-09F6-4F1C-B7E8-04CAD7BD3720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TotalErrorWebAPI", "WebAPI\TotalErrorWebAPI\TotalErrorWebAPI.csproj", "{6A61ECD1-B446-41D1-8873-5AD5ACEED377}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TotalErrorWebAPI", "WebAPI\TotalErrorWebAPI\TotalErrorWebAPI.csproj", "{6A61ECD1-B446-41D1-8873-5AD5ACEED377}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Constants", "Constants\Constants.csproj", "{0372609F-4EF9-4BF2-840E-6F373402A710}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{6A61ECD1-B446-41D1-8873-5AD5ACEED377}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A61ECD1-B446-41D1-8873-5AD5ACEED377}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A61ECD1-B446-41D1-8873-5AD5ACEED377}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0372609F-4EF9-4BF2-840E-6F373402A710}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0372609F-4EF9-4BF2-840E-6F373402A710}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0372609F-4EF9-4BF2-840E-6F373402A710}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0372609F-4EF9-4BF2-840E-6F373402A710}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

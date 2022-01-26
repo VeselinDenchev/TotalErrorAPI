@@ -30,8 +30,6 @@
         {
             ItemType itemType = new ItemType();
             itemType.ItemTypeName = itemTypeName;
-            /*itemType.CreatedById = userId;
-            itemType.ModifiedById = userId;*/
 
             this.DbContext.ItemTypes.Add(itemType);
             this.DbContext.SaveChanges();

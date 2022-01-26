@@ -4,9 +4,11 @@
 
     public class RegisterViewModel
     {
+        private const string CONFIRM_PASSWORD_STRING = "ConfirmPassword";
+
         public string Email { get; set; }
 
-        [Compare("ConfirmPassword")]
+        [Compare(CONFIRM_PASSWORD_STRING)]
         public string Password { get; set; }
 
         public string ConfirmPassword { get; set; }

@@ -1,5 +1,7 @@
 ﻿namespace TotalErrorWebAPI.Controllers
 {
+    using Constants.Controllers;
+
     using Data.Models.Models;
     using Data.Services.Interfaces;
 
@@ -10,9 +12,7 @@
 
     using Newtonsoft.Json;
 
-    using System.Security.Claims;
-
-    [Route("api/[controller]")]
+    [Route(ControllerConstant.CONTROLLER_ROUTE)]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ItemTypeController : ControllerBase
@@ -25,10 +25,8 @@
 
         public IItemTypesMainService ItemTypesMainService { get; set; }
 
-        //private UserManager<User> UserManager { get; set; }
-
         [HttpGet]
-        [Route("all")]
+        [Route(ItemTypeControllerConstant.GET_ALL_ITEM_TYPES_ROUTE)]
         public IActionResult GetAllItemTypes()
         {
             var itemTypes = ItemTypesMainService.GetItemTypes();
@@ -39,20 +37,13 @@
         }
 
         [HttpPost]
-        [Route("add/{itemType}")]
+        [Route(ItemTypeControllerConstant.ADD_ITEM_TYPE_ROUTE)]
         public IActionResult AddItemType([FromRoute] string itemType)
         {
             if (itemType is null)
             {
-                return BadRequest("Invalid item type name!");
+                return BadRequest(ItemTypeControllerConstant.INVALID_ITEM_TYPE_NAME_MESSAGE);
             }
-
-            //ClaimsPrincipal currentUser = this.User;
-            //var currentUserName = currentUser.FindFirst(ClaimTypes.NameIdentifier).Value;
-            //var user = this.UserManager.FindByNameAsync(User.Identity.Name).Result;
-            //string userId = user.Id;
-
-            //this.ItemTypesMainService.AddItemType(itemType, userId);
 
             this.ItemTypesMainService.AddItemType(itemType);
 
@@ -60,31 +51,31 @@
         }
 
         [HttpPost]
-        [Route("update/{oldItemTypeName}-{newItemTypeName}")]
-        public IActionResult UpdateItemType([FromRoute] string oldItemTypeName, [FromRoute] string newItemTypeName)
+        [Route(ItemTypeControllerConstant.UPDATE_ITEM_TYPE_ROUTE)]
+        public IActionResult UpdateItemType([FromRoute] string oldItemType, [FromRoute] string newItemType)
         {
-            if (oldItemTypeName is null || newItemTypeName is null)
+            if (oldItemType is null || newItemType is null)
             {
-                return BadRequest("Invalid item type name!");
+                return BadRequest(ItemTypeControllerConstant.INVALID_ITEM_TYPE_NAME_MESSAGE);
             }
 
-            this.ItemTypesMainService.UpdateItemType(oldItemTypeName, newItemTypeName);
+            this.ItemTypesMainService.UpdateItemType(oldItemType, newItemType);
 
-            return Ok(newItemTypeName);
+            return Ok(newItemType);
         }
 
         [HttpPost]
-        [Route("delete/{itemType}")]
+        [Route(ItemTypeControllerConstant.DELETE_ITEM_TYPE_ROUTE)]
         public IActionResult DeleteItemType([FromRoute] string itemType)
         {
             if (itemType is null)
             {
-                return BadRequest("Invalid item type name!");
+                return BadRequest(ItemTypeControllerConstant.INVALID_ITEM_TYPE_NAME_MESSAGE);
             }
 
             this.ItemTypesMainService.DeleteItemType(itemType);
 
-            return Ok($"{itemType} is deleted!");
+            return Ok(string.Format(ItemTypeControllerConstant.ITEM_TYPE_SUCCESSFULLY_DELETED_MESSAGE, itemType));
         }
     }
 }

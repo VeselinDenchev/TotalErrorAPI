@@ -8,6 +8,7 @@
 
     using System.Reflection;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+    using Constants;
 
     public class TotalErrorDbContext : IdentityDbContext<User>
     {
@@ -29,7 +30,7 @@
         {
             configuration = new ConfigurationBuilder().AddUserSecrets(Assembly.GetExecutingAssembly()).Build();
 
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString(DatabaseConstant.DEFAULT_CONNECTION_STRING));
         }
 
         public override int SaveChanges()

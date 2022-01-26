@@ -1,5 +1,7 @@
 ﻿namespace TotalErrorWebAPI.Controllers
 {
+    using Constants.Controllers;
+
     using Data.Services.Interfaces;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -8,7 +10,7 @@
 
     using Newtonsoft.Json;
 
-    [Route("api/[controller]")]
+    [Route(ControllerConstant.CONTROLLER_ROUTE)]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RegionController : ControllerBase
@@ -22,7 +24,7 @@
 
         
         [HttpGet]
-        [Route("All")]
+        [Route(RegionControllerConstant.GET_ALL_REGIONS_ROUTE)]
         public IActionResult GetAllRegions()
         {
             var regions = this.RegionsMainService.GetRegions();
@@ -33,12 +35,12 @@
         }
 
         [HttpPost]
-        [Route("add/{regionName}")]
+        [Route(RegionControllerConstant.ADD_REGION_ROUTE)]
         public IActionResult AddRegion([FromRoute] string regionName)
         {
             if (regionName is null)
             {
-                return BadRequest("Invalid region name!");
+                return BadRequest(RegionControllerConstant.INVALID_REGION_NAME_MESSAGE);
             }
 
             this.RegionsMainService.AddRegion(regionName);
@@ -47,31 +49,31 @@
         }
 
         [HttpPost]
-        [Route("update/{oldRegionName}-{newRegionName}")]
-        public IActionResult UpdateItemType([FromRoute] string oldRegionName, [FromRoute] string newRegionName)
+        [Route(RegionControllerConstant.UPDATE_REGION_ROUTE)]
+        public IActionResult UpdateItemType([FromRoute] string oldRegion, [FromRoute] string newRegion)
         {
-            if (oldRegionName is null || newRegionName is null)
+            if (oldRegion is null || newRegion is null)
             {
-                return BadRequest("Invalid item type name!");
+                return BadRequest(RegionControllerConstant.INVALID_REGION_NAME_MESSAGE);
             }
 
-            this.RegionsMainService.UpdateRegion(oldRegionName, newRegionName);
+            this.RegionsMainService.UpdateRegion(oldRegion, newRegion);
 
-            return Ok(newRegionName);
+            return Ok(newRegion);
         }
 
         [HttpPost]
-        [Route("delete/{region}")]
+        [Route(RegionControllerConstant.DELETE_REGION_ROUTE)]
         public IActionResult DeleteItemType([FromRoute] string region)
         {
             if (region is null)
             {
-                return BadRequest("Invalid country name!");
+                return BadRequest(RegionControllerConstant.INVALID_REGION_NAME_MESSAGE);
             }
 
             this.RegionsMainService.DeleteRegion(region);
 
-            return Ok($"{region} is deleted!");
+            return Ok(string.Format(RegionControllerConstant.REGION_DELETED_SUCCESSFULLY_MESSAGE, region));
         }
     }
 }

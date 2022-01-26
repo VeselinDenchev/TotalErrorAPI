@@ -1,5 +1,7 @@
 ﻿namespace TotalErrorWebAPI.Controllers
 {
+    using Constants.Controllers;
+
     using Data.Models.Models;
     using Data.Services.DtoModels;
     using Data.Services.Interfaces;
@@ -7,13 +9,12 @@
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
     using Newtonsoft.Json;
 
-    [Route("api/[controller]")]
+    [Route(ControllerConstant.CONTROLLER_ROUTE)]
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrderController : ControllerBase
@@ -29,8 +30,8 @@
         public TotalErrorDbContext DbContext { get; }
 
         [HttpGet]
-        [Route("all")]
-        public IActionResult GetOrders()
+        [Route(OrderControllerConstant.GET_ALL_ORDERS_ROUTE)]
+        public IActionResult GetAllOrders()
         {
             var orders = OrdersMainService.GetOrders();
             
@@ -40,7 +41,7 @@
         }
 
         [HttpGet]
-        [Route("orders_grouped_by_region")]
+        [Route(OrderControllerConstant.GET_ORDERS_GROUPED_BY_REGION_ROUTE)]
         public IActionResult GetOrdersGroupedByRegion()
         {
             var orders = OrdersMainService.GetOrdersGroupedByRegion(out Dictionary<RegionDto, decimal> regionsTotalCost,
@@ -54,7 +55,7 @@
         }
 
         [HttpGet]
-        [Route("orders_grouped_by_country")]
+        [Route(OrderControllerConstant.GET_ORDERS_GROUPED_BY_COUNTRY_ROUTE)]
         public IActionResult GetOrdersGroupedByCountry()
         {
             var orders = OrdersMainService.GetOrdersGroupedByCountry(out Dictionary<CountryDto, decimal> countriesTotalCost,
@@ -68,7 +69,7 @@
         }
 
         [HttpGet]
-        [Route("orders_grouped_by_order_date")]
+        [Route(OrderControllerConstant.GET_ORDERS_GROUPED_BY_ORDER_DATE_ROUTE)]
         public IActionResult GetOrdersGroupedByOrderDate()
         {
             var orders = OrdersMainService.GetOrdersGroupedByOrderDate(out Dictionary<DateTime, decimal> datesTotalCost,
@@ -82,7 +83,7 @@
         }
 
         [HttpPost]
-        [Route("add")]
+        [Route(OrderControllerConstant.ADD_ORDER_ROUTE)]
         public IActionResult AddOrder([FromBody] OrderDto order)
         {
             bool isValid = order.SalesChannel is not null && order.Sales is not null && order.OrderPriority is not null 
@@ -90,7 +91,7 @@
 
             if (!isValid)
             {
-                return BadRequest("Invalid order data!");
+                return BadRequest(OrderControllerConstant.INVALID_ORDER_DATA_MESSAGE);
             }
 
             bool isAlreadyInTheDatabase = false;
@@ -110,7 +111,7 @@
 
             if (isAlreadyInTheDatabase)
             {
-                return BadRequest("A sale is already in the database!");
+                return BadRequest(OrderControllerConstant.SALE_IS_ALREADY_IN_THE_DATABASE_MESSAGE);
             }
 
             this.OrdersMainService.AddOrder(order);
@@ -119,14 +120,14 @@
         }
 
         [HttpPost]
-        [Route("update/{orderId}")]
+        [Route(OrderControllerConstant.UPDATE_ORDER_ROUTE)]
         public IActionResult UpdateOrder(string orderId, [FromBody] OrderDto order)
         {
             Order initialOrder = this.DbContext.Orders.Where(o => o.Id == orderId && o.IsDeleted == false)
                                                         .Include(o => o.Sales.Where(s => s.IsDeleted == false)).FirstOrDefault();
             if (initialOrder is null)
             {
-                return BadRequest("Order with such id doesn't exist!");
+                return BadRequest(OrderControllerConstant.ORDER_WITH_SUCH_ID_DOESNT_EXIST_MESSAGE);
             }
 
             this.OrdersMainService.UpdateOrder(initialOrder, order);
@@ -135,7 +136,7 @@
         }
 
         [HttpPost]
-        [Route("delete/{orderId}")]
+        [Route(OrderControllerConstant.DELETE_ORDER_ROUTE)]
         public IActionResult DeleteOrder(string orderId)
         {
             Order order = this.DbContext.Orders.Where(o => o.Id == orderId && o.IsDeleted == false)
@@ -143,12 +144,12 @@
             
             if (order is null)
             {
-                return BadRequest("Order with such id doesn't exist!");
+                return BadRequest(OrderControllerConstant.ORDER_WITH_SUCH_ID_DOESNT_EXIST_MESSAGE);
             }
 
             this.OrdersMainService.DeleteOrder(order);
 
-            return Ok("Order is successfully deleted!");
+            return Ok(OrderControllerConstant.ORDER_IS_SUCCSESSFULLY_DELETED_MESSAGE);
         }
     }
 }

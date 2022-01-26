@@ -16,10 +16,6 @@
 
         public decimal TotalProfit { get; set; }
 
-        //public OrderDto Order { get; set; }
-
         public ItemTypeDto ItemType { get; set; }
-
-        //public string FileDate { get; set; }
     }
 }

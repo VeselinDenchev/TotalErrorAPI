@@ -3,12 +3,14 @@
     using Data.Models.Models;
     using Data.Services.ViewModels;
     using Data.Services.DtoModels;
+    using Data.Services.Interfaces;
 
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
-    using Data.Services.Interfaces;
 
-    [Route("api/[controller]")]
+    using Constants.Controllers;
+
+    [Route(ControllerConstant.CONTROLLER_ROUTE)]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -26,7 +28,7 @@
         public IJwtTokenService JwtService { get; set; }
 
         [HttpPost]
-        [Route("register")]
+        [Route(AccountControllerConstant.REGISTER_ROUTE)]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel registerModel)
         {
             var checkUser = await UserManager.FindByEmailAsync(registerModel.Email);
@@ -48,23 +50,24 @@
 
                 if (result.Succeeded && token.Length > 0)
                 {
-                    return Ok();
+                    return Ok(AccountControllerConstant.SUCCESSFULLY_REGISTERED_MESSAGE);
                 }
-                return BadRequest("Register attempt failed! Check email and password!");
+                return BadRequest(AccountControllerConstant.REGISTER_ATTEMPT_FAILED_MESSAGE);
             }
 
-            return BadRequest("Invalid register data!");
+            return BadRequest(AccountControllerConstant.INVALID_REGISTER_DATA_MESSAGE);
         }
 
         [HttpPost]
-        [Route("login")]
+        [Route(AccountControllerConstant.LOGIN_ROUTE)]
         public async Task<IActionResult> Login([FromBody] LoginViewModel loginModel)
         {
             var checkUser = await UserManager.FindByEmailAsync(loginModel.Email);
-
-            var checkPassword = await SignInManager.CheckPasswordSignInAsync(checkUser, loginModel.Password, lockoutOnFailure: false);
+            
             if (checkUser is not null)
             {
+                var checkPassword = await SignInManager.CheckPasswordSignInAsync(checkUser, loginModel.Password, lockoutOnFailure: false);
+
                 var token = JwtService.GenerateUserToken(new RequestTokenModel()
                 {
                     Email = checkUser.Email,
@@ -73,13 +76,13 @@
 
                 if (checkPassword.Succeeded && token.Length > 0)
                 {
-                    return Ok();
+                    return Ok(AccountControllerConstant.SUCCESSFULLY_LOGGED_IN_MESSAGE);
                 }
 
-                return BadRequest();
+                return BadRequest(AccountControllerConstant.WRONG_PASSWORD_OR_TOKEN_ERROR_MESSAGE);
             }
 
-            return BadRequest();
+            return BadRequest(AccountControllerConstant.NO_SUCH_USER_MESSAGE);
         }
     }
 }

@@ -1,49 +1,51 @@
 ﻿namespace Data.Services.DtoModels
 {
+    using Constants;
+
     using CsvHelper.Configuration.Attributes;
 
     public class TransferModel
     {
-        [Name("Region")]
+        [Name(TransferModelConstant.REGION)]
         public string Region { get; set; }
 
-        [Name("Country")]
+        [Name(TransferModelConstant.COUNTRY)]
         public string Country { get; set; }
 
-        [Name("Item Type")]
+        [Name(TransferModelConstant.ITEM_TYPE)]
         public string ItemType { get; set; }
 
-        [Name("Sales Channel")]
+        [Name(TransferModelConstant.SALES_CHANNEL)]
         public string SalesChannel { get; set; }
 
-        [Name("Order Priority")]
+        [Name(TransferModelConstant.ORDER_PRIORITY)]
         public string OrderPriority { get; set; }
 
-        [Name("Order Date")]
+        [Name(TransferModelConstant.ORDER_DATE)]
         public string OrderDate { get; set; }
 
-        [Name("Order ID")]
+        [Name(TransferModelConstant.ORDER_ID)]
         public string OrderId { get; set; }
 
-        [Name("Ship Date")]
+        [Name(TransferModelConstant.SHIP_DATE)]
         public string ShipDate { get; set; }
 
-        [Name("Units Sold")]
+        [Name(TransferModelConstant.UNITS_SOLD)]
         public string UnitsSold { get; set; }
 
-        [Name("Unit Price")]
+        [Name(TransferModelConstant.UNIT_PRICE)]
         public string UnitPrice { get; set; }
 
-        [Name("Unit Cost")]
+        [Name(TransferModelConstant.UNIT_COST)]
         public string UnitCost { get; set; }
 
-        [Name("Total Revenue")]
+        [Name(TransferModelConstant.TOTAL_REVENUE)]
         public string TotalRevenue { get; set; }
 
-        [Name("Total Cost")]
+        [Name(TransferModelConstant.TOTAL_COST)]
         public string TotalCost { get; set; }
 
-        [Name("Total Profit")]
+        [Name(TransferModelConstant.TOTAL_PROFIT)]
         public string TotalProfit { get; set; }
     }
 }

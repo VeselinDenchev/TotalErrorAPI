@@ -1,3 +1,5 @@
+using Constants;
+
 using Data.Models.Models;
 using Data.Services.DtoModels;
 using Data.Services.Implementations;
@@ -43,8 +45,8 @@ builder.Services.AddScoped<IRegionsMainService, RegionsMainService>();
 builder.Services.AddScoped<IItemTypesMainService, ItemTypesMainService>();
 
 builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
-builder.Services.Configure<TokenModel>(builder.Configuration.GetSection("JWT"));
-var token = builder.Configuration.GetSection("JWT").Get<TokenModel>();
+builder.Services.Configure<TokenModel>(builder.Configuration.GetSection(TokenModelConstant.JWT));
+var token = builder.Configuration.GetSection(TokenModelConstant.JWT).Get<TokenModel>();
 var secret = Encoding.ASCII.GetBytes(token.TokenSecret);
 
 builder.Services.AddIdentity<User, UserRole>().AddEntityFrameworkStores<TotalErrorDbContext>().AddDefaultTokenProviders();
@@ -71,9 +73,10 @@ builder.Services.AddAuthentication(a =>
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidAudience = builder.Configuration["JWT:ValidateAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidateIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:TokenSecret"]))
+        ValidAudience = builder.Configuration[TokenModelConstant.JWT + ':' + TokenModelConstant.VALIDATE_AUDIENCE],
+        ValidIssuer = builder.Configuration[TokenModelConstant.JWT + ':' + TokenModelConstant.VALIDATE_ISSUER],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                                .GetBytes(builder.Configuration[TokenModelConstant.JWT + ':' + TokenModelConstant.TOKEN_SECRET]))
     };
 });
 
@@ -87,7 +90,7 @@ builder.Services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 builder.Services.AddSingleton<SchedulerReader>();
 builder.Services.AddSingleton(new JobSchedule(
     jobType: typeof(SchedulerReader),
-    cronExpression: "0 * * ? * *"
+    cronExpression: CronExpressionConstant.CRON_EXPRESSION_EVERY_MINUTE
     ));
 
 builder.Services.AddHostedService<QuartzHostedService>();
