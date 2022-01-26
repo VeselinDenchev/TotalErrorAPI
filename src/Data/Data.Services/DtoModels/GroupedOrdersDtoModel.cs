@@ -11,6 +11,7 @@
             this.TotalProfitPerGroup = totalProfitPerGroup;
         }
 
+
         public List<IGrouping<T, OrderDto>> GroupedOrders { get; set; }
 
         public Dictionary<T, decimal> TotalCostPerGroup { get; set; }

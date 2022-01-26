@@ -7,9 +7,11 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    using Newtonsoft.Json;
+
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 
     public class CountryController : Controller
     {
@@ -26,7 +28,9 @@
         {
             List<CountryDto> countries = this.CountriesMainService.GetCountries();
 
-            return Ok(countries);
+            var countriesJson = JsonConvert.SerializeObject(countries);
+
+            return Ok(countriesJson);
         }
 
         [HttpGet]
@@ -40,7 +44,9 @@
                 return BadRequest("Invalid country data!");
             }
 
-            return Ok(country);
+            var countryJson = JsonConvert.SerializeObject(country);
+
+            return Ok(countryJson);
         }
 
         [HttpPost]

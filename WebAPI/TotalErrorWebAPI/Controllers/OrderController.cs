@@ -5,6 +5,8 @@
     using Data.Services.Interfaces;
     using Data.TotalErrorDbContext;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
@@ -13,6 +15,7 @@
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrderController : ControllerBase
     {
         public OrderController(IOrdersMainService ordersMainService, TotalErrorDbContext dbContext)
@@ -30,8 +33,10 @@
         public IActionResult GetOrders()
         {
             var orders = OrdersMainService.GetOrders();
+            
+            var ordersJson = JsonConvert.SerializeObject(orders);
 
-            return Ok(orders);
+            return Ok(ordersJson);
         }
 
         [HttpGet]

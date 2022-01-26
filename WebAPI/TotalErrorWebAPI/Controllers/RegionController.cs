@@ -2,10 +2,15 @@
 {
     using Data.Services.Interfaces;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    
+
+    using Newtonsoft.Json;
+
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class RegionController : ControllerBase
     {
         public RegionController(IRegionsMainService regionsMainService)
@@ -17,11 +22,14 @@
 
         
         [HttpGet]
+        [Route("All")]
         public IActionResult GetAllRegions()
         {
             var regions = this.RegionsMainService.GetRegions();
 
-            return Ok(regions);
+            var regionsJson = JsonConvert.SerializeObject(regions);
+
+            return Ok(regionsJson);
         }
 
         [HttpPost]
