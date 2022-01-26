@@ -1,5 +1,7 @@
 ﻿namespace TotalErrorWebAPI.Scheduler
 {
+    using Constants;
+
     using Data.Services.DtoModels;
     using Data.Services.Implementations;
     using Data.TotalErrorDbContext;
@@ -18,10 +20,11 @@
 
         public async Task Execute(IJobExecutionContext context)
         {
-            this.logger.LogInformation("Task started");
+            this.logger.LogInformation(SchedulerReaderConstant.TASK_STARTED_MESSAGE);
 
             BaseService baseService = new BaseService(new TotalErrorDbContext());
-            Dictionary<string, List<TransferModel>> transferModelsByFile = baseService.ReadFilesFromDirectory(@"E:\read_files");
+            Dictionary<string, List<TransferModel>> transferModelsByFile = baseService
+                                                                            .ReadFilesFromDirectory(SchedulerReaderConstant.READ_DIRECTORY);
 
             DataObject data = baseService.Convert(transferModelsByFile);
             List<string> dates = new List<string>();
@@ -42,7 +45,7 @@
             baseService.Convert(transferModelsByFile);
             baseService.SaveDataToDatabase(data);
 
-            this.logger.LogInformation("Task ended");
+            this.logger.LogInformation(SchedulerReaderConstant.TASK_ENDED_MESSAGE);
         }
     }
 }

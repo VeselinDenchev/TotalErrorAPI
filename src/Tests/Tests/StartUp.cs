@@ -1,9 +1,9 @@
 ﻿namespace Tests
 {
     using System.Collections.Generic;
-    using System.Globalization;
 
-    using Data.Models.Models;
+    using Constants;
+
     using Data.Services.DtoModels;
     using Data.Services.Implementations;
     using Data.TotalErrorDbContext;
@@ -13,7 +13,8 @@
         public static void Main()
         {
             BaseService baseService = new BaseService(new TotalErrorDbContext());
-            Dictionary<string, List<TransferModel>> transferModelsByFile = baseService.ReadFilesFromDirectory(@"E:\read_files");
+            Dictionary<string, List<TransferModel>> transferModelsByFile = baseService
+                                                                            .ReadFilesFromDirectory(SchedulerReaderConstant.READ_DIRECTORY);
 
             DataObject data = baseService.Convert(transferModelsByFile);
             List<string> dates = new List<string>();
@@ -32,11 +33,6 @@
 
             baseService.Convert(transferModelsByFile);
             baseService.SaveDataToDatabase(data);
-
-            /*MapperConfiguration config = new MapperConfiguration(cfg => cfg.CreateMap<Company, CompanyDto>());
-            Mapper mapper = new Mapper(config);
-            MainCompanyService mainCompanyService = new MainCompanyService(new ApplicationDbContext(), mapper);
-            var res = mainCompanyService.GetCompanies();*/
         }
     }
 }
